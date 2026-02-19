@@ -61,7 +61,7 @@ Unique 6-digit OTP generated
 OTP visible only to Worker
 Requester must enter OTP to activate session
 
-✅ Prevents:
+Prevents:
 Fake service completion
 Fraudulent remote acceptance
 Unauthorized entry
