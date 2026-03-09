@@ -10,7 +10,8 @@ const AdminSOSPanel = () => {
 
     useEffect(() => {
         // Connect to socket for real-time SOS
-        const socket = io('http://localhost:5000');
+        const socketUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/api$/, '') : 'http://localhost:5000';
+        const socket = io(socketUrl);
         socket.emit('join_admin');
 
         socket.on('sosAlertTriggered', (alert) => {

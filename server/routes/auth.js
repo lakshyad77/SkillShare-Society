@@ -72,7 +72,18 @@ router.post('/signup', async (req, res) => {
         });
 
     } catch (err) {
-        console.error('[Signup Error]', err.message);
+        console.error('[Signup Error]', err.message || err);
+        
+        // Handle Supabase unique constraint violations smoothly
+        if (err.code === '23505') {
+            if (err.message.includes('username')) {
+                return res.status(400).json({ msg: 'Username is already taken. Please choose another.' });
+            }
+            if (err.message.includes('email')) {
+                return res.status(400).json({ msg: 'Email is already registered.' });
+            }
+        }
+        
         res.status(500).json({ msg: err.message || 'Server error' });
     }
 });

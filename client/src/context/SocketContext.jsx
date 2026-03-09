@@ -10,7 +10,8 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         if (user) {
-            const newSocket = io('http://localhost:5000');
+            const socketUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/api$/, '') : 'http://localhost:5000';
+            const newSocket = io(socketUrl);
 
             newSocket.emit('join_room', user._id); // Assuming user._id is the ID
 

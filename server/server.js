@@ -8,19 +8,18 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: ["http://localhost:5173", "http://127.0.0.1:5173"], // Allow frontend
-        methods: ["GET", "POST", "PUT", "DELETE"],
-        credentials: true
-    }
-});
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        callback(null, true); // Allow any origin essentially resolving Vercel/Netlify CORS issues
+    },
+    credentials: true
+};
+
+const io = new Server(server, { cors: corsOptions });
 
 // Middleware
-app.use(cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
-    credentials: true
-}));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes

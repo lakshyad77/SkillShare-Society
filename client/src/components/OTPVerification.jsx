@@ -26,7 +26,8 @@ const OTPVerification = ({ phoneNumber, onVerified }) => {
         setStatus('sending');
         setMessage('');
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/send-otp', { phoneNumber });
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+            const res = await axios.post(`${apiUrl}/auth/send-otp`, { phoneNumber });
             setStatus('sent');
             setCountdown(60);
             setMessage('OTP sent! Check your phone.');
@@ -62,7 +63,8 @@ const OTPVerification = ({ phoneNumber, onVerified }) => {
         }
         setStatus('verifying');
         try {
-            await axios.post('http://localhost:5000/api/auth/verify-otp', {
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+            await axios.post(`${apiUrl}/auth/verify-otp`, {
                 phoneNumber,
                 otp: otpString,
             });
