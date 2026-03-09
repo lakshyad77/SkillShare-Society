@@ -46,6 +46,11 @@ const skillKeywordMap = {
     // Gardening
     'garden': 'Gardening', 'plant': 'Gardening', 'gardening': 'Gardening',
     'tree': 'Gardening', 'grass': 'Gardening', 'flower': 'Gardening', 'lawn': 'Gardening',
+    // Tech Help
+    'tech': 'Tech Help', 'laptop': 'Tech Help', 'computer': 'Tech Help', 'pc': 'Tech Help',
+    'ram': 'Tech Help', 'software': 'Tech Help', 'hardware': 'Tech Help', 'wifi': 'Tech Help',
+    'internet': 'Tech Help', 'virus': 'Tech Help', 'phone': 'Tech Help', 'mobile': 'Tech Help',
+    'screen': 'Tech Help', 'keyboard': 'Tech Help', 'mouse': 'Tech Help', 'printer': 'Tech Help',
     // Mechanic / Vehicle
     'bike': 'Mechanic', 'car': 'Mechanic', 'vehicle': 'Mechanic', 'petrol': 'Mechanic',
     'puncture': 'Mechanic', 'punchered': 'Mechanic', 'tyre': 'Mechanic', 'engine': 'Mechanic',
@@ -94,7 +99,7 @@ async function geminiParse(message) {
 From this message: "${message}"
 
 Extract:
-1. skill - one of: Plumbing, Tutor, Cooking, Cleaning, Electrician, Painting, Driving, Carpentry, Gardening, Mechanic, or null
+1. skill - one of: Plumbing, Tutor, Cooking, Cleaning, Electrician, Painting, Driving, Carpentry, Gardening, Mechanic, Tech Help, or null
 2. time - one of: Morning, Evening, Weekend, or null
 
 Respond ONLY in this JSON format, nothing else:
@@ -127,7 +132,7 @@ async function openAIParse(message) {
                 {
                     role: 'system',
                     content: `You extract skill and time from community service requests. 
-Skills: Plumbing, Tutor, Cooking, Cleaning, Electrician, Painting, Driving, Carpentry, Gardening, Mechanic.
+Skills: Plumbing, Tutor, Cooking, Cleaning, Electrician, Painting, Driving, Carpentry, Gardening, Mechanic, Tech Help.
 Times: Morning, Evening, Weekend.
 Always respond ONLY with JSON: {"skill": "...", "time": "..."} — use null if not found.`
                 },

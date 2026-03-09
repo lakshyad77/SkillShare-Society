@@ -265,6 +265,10 @@ router.post('/verify-session', auth, async (req, res) => {
 
         if (error || !request) return res.status(404).json({ msg: 'Request not found' });
 
+        if (request.session_otp && String(request.session_otp).trim() !== String(otp).trim()) {
+            return res.status(400).json({ msg: 'Incorrect OTP. Please try again.' });
+        }
+
         // Simple bypass if columns are missing or if OTP matches
         const updateData = { status: 'Active' };
         try { updateData.otp_verified = true; } catch { }

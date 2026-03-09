@@ -31,6 +31,8 @@ const demoUsers = [
     { fullName: 'Pooja Reddy', username: 'pooja_r', email: 'pooja@demo.com', role: 'Worker', skills: ['Tutor', 'Gardening'], avail: ['Evening', 'Weekend'], block: 'E', flat: '204', lat: 12.9706, lng: 77.5935 },
     { fullName: 'Girish Hegde', username: 'girish_h', email: 'girish@demo.com', role: 'Worker', skills: ['Electrician', 'Driving'], avail: ['Morning', 'Weekend'], block: 'E', flat: '302', lat: 12.9705, lng: 77.5934 },
     { fullName: 'Radha Bhat', username: 'radha_b', email: 'radha@demo.com', role: 'Both', skills: ['Cooking', 'Tutor'], avail: ['Morning', 'Evening', 'Weekend'], block: 'E', flat: '403', lat: 12.9704, lng: 77.5933 },
+    { fullName: 'Tech Support', username: 'tech_expert', email: 'name@demo.com', role: 'Worker', skills: ['Tech Help'], avail: ['Morning', 'Evening', 'Weekend'], block: 'A', flat: '105', lat: 12.9715, lng: 77.5947 },
+    { fullName: 'David Lee', username: 'david_tech', email: 'david@demo.com', role: 'Both', skills: ['Tech Help', 'Electrician'], avail: ['Weekend', 'Evening'], block: 'B', flat: '202', lat: 12.9721, lng: 77.5951 },
 ];
 
 async function seed() {

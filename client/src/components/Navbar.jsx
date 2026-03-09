@@ -20,6 +20,7 @@ const Navbar = () => {
             </Link>
 
             <div className="navbar-links">
+                <Link to="/about" className="navbar-link" style={{ marginRight: '16px', fontWeight: 600, color: '#94a3b8', textDecoration: 'none' }}>About</Link>
                 {user ? (
                     <>
                         <span style={{ color: '#94a3b8', fontSize: '15px', fontWeight: 600 }}>

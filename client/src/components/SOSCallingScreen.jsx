@@ -1,13 +1,61 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldAlert, PhoneOff, MapPin, Activity } from 'lucide-react';
+import api from '../services/api';
 
 const SOSCallingScreen = ({ onCancel }) => {
     const [seconds, setSeconds] = useState(0);
+    const [statusText, setStatusText] = useState('Triangulating Location...');
+    const [errorMsg, setErrorMsg] = useState(null);
+    const [locationDetails, setLocationDetails] = useState('');
 
     useEffect(() => {
         const timer = setInterval(() => setSeconds(s => s + 1), 1000);
         return () => clearInterval(timer);
+    }, []);
+
+    useEffect(() => {
+        const triggerAlert = async () => {
+            if (!navigator.geolocation) {
+                setErrorMsg('Geolocation not supported by your browser.');
+                setStatusText('Location Failed');
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setStatusText('Broadcasting to Security Hub...');
+                    
+                    let address = 'Location captured';
+                    try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                        const data = await res.json();
+                        if (data && data.display_name) {
+                            address = data.display_name;
+                            setLocationDetails(address);
+                        } else {
+                            setLocationDetails(`Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`);
+                        }
+                    } catch (e) {
+                        setLocationDetails(`Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`);
+                    }
+
+                    try {
+                        await api.post('/safety/sos', { latitude, longitude, address });
+                        setStatusText('Alert Broadcasted Successfully');
+                    } catch (err) {
+                        setErrorMsg('Failed to broadcast alert.');
+                    }
+                },
+                (error) => {
+                    setErrorMsg('Location access denied. Cannot send SOS.');
+                    setStatusText('Location Failed');
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        };
+        triggerAlert();
     }, []);
 
     return (
@@ -43,16 +91,22 @@ const SOSCallingScreen = ({ onCancel }) => {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20, width: '100%', maxWidth: 300 }}>
-                {[
-                    { icon: <MapPin size={18} />, text: 'Triangulating Location...' },
-                    { icon: <Activity size={18} />, text: 'Broadcasting to Security Hub' },
-                    { icon: <Activity size={18} />, text: `Time Elapsed: ${seconds}s` },
-                ].map((item, i) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px', borderRadius: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                        <span style={{ color: '#ef4444' }}>{item.icon}</span>
-                        <span style={{ fontSize: 14, fontWeight: 500 }}>{item.text}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '12px 20px', borderRadius: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <span style={{ color: '#ef4444' }}><MapPin size={18} /></span>
+                        <span style={{ fontSize: 14, fontWeight: 500 }}>{statusText}</span>
                     </div>
-                ))}
+                    {locationDetails && (
+                        <div style={{ marginTop: 4, fontSize: 13, color: 'rgba(255,255,255,0.8)', lineHeight: 1.4, fontWeight: 500 }}>
+                            <span style={{ color: '#fca5a5', fontWeight: 600 }}>📍 Location:</span> {locationDetails}
+                        </div>
+                    )}
+                </div>
+                {errorMsg && <div style={{ color: '#fca5a5', fontSize: 12, textAlign: 'center' }}>{errorMsg}</div>}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px', borderRadius: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <span style={{ color: '#ef4444' }}><Activity size={18} /></span>
+                    <span style={{ fontSize: 14, fontWeight: 500 }}>Time Elapsed: {seconds}s</span>
+                </div>
             </div>
 
             <motion.button
